@@ -1,7 +1,8 @@
-// actionTypes
-const GET_SESSION_SUCCESS = 'GET_SESSION_SUCCESS';
-const GET_SESSION_ERROR = 'GET_SESSION_ERROR';
-const GET_USER_SESSION_SUCCESS = 'GET_USER_SESSION_SUCCESS';
+import {
+  GET_SESSION_SUCCESS,
+  GET_SESSION_ERROR,
+  GET_USER_SESSION_SUCCESS
+} from './actionTypes';
 
 export const getSessionSuccess = () => {
   return { type: GET_SESSION_SUCCESS };

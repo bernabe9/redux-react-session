@@ -1,4 +1,4 @@
-import * as constant from '../constants/apiConstants';
+import * as constant from './constants';
 import * as localForage from 'localforage';
 import { browserHistory } from 'react-router';
 import {
@@ -6,6 +6,7 @@ import {
   getSessionError,
   getUserSessionSuccess
 } from './actions';
+import reducer from './reducer';
 
 let instance;
 
@@ -105,3 +106,5 @@ export class sessionService {
     });
   }
 }
+
+export const sessionReducer = reducer;
