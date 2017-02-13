@@ -43,7 +43,7 @@ Options:
 - refreshOnCheckAuth(default: false): Refresh Redux store in the `checkAuth` function
 - redirectPath(default: "login"): Path used when a session is rejected or doesn't exist
 
-#### refreshFromLocalStorage
+### refreshFromLocalStorage
 Force to refresh the Redux Store from the localStorage.
 
 Note: this function is called once the session service is initialized
