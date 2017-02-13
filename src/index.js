@@ -11,17 +11,18 @@ import reducer from './reducer';
 let instance;
 
 export class sessionService {
-  constructor(store, refreshOnCheckAuth) {
+  constructor(store, refreshOnCheckAuth, redirectPath) {
     if (!instance) {
       instance = this;
       instance.store = store;
       instance.refreshOnCheckAuth = refreshOnCheckAuth;
+      instance.redirectPath = redirectPath;
     }
     return instance;
   }
 
-  static initSessionService(store, refreshOnCheckAuth = false) {
-    instance = new sessionService(store, refreshOnCheckAuth);
+  static initSessionService(store, refreshOnCheckAuth = false, redirectPath = 'login') {
+    instance = new sessionService(store, refreshOnCheckAuth, redirectPath);
     sessionService.refreshFromLocalStorage();
   }
 
@@ -46,12 +47,12 @@ export class sessionService {
       sessionService.loadUser().then((user) => {
         refreshOnCheckAuth && store.dispatch(getUserSessionSuccess(user));
         next();
-      });
+      }).catch(() => next());
     })
     .catch(() => {
       refreshOnCheckAuth && store.dispatch(getSessionError());
       replace({
-        pathname: '/login',
+        pathname: instance.redirectPath,
         state: { nextPathname: nextState.location.pathname }
       });
       next();
@@ -73,7 +74,7 @@ export class sessionService {
   static deleteSession() {
     return localForage.removeItem(constant.USER_SESSION).then(() => {
       instance.store.dispatch(getSessionError());
-      browserHistory.replace('/login');
+      browserHistory.replace(instance.redirectPath);
     });
   }
 
