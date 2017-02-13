@@ -11,7 +11,7 @@ Redux React Session provides an API that allows to manage sessions through the a
 
 ## Usage
 
-1. Add the session reducer:
+- Add the session reducer:
 ```javascript
 import { combineReducers } from 'redux';
 import { sessionReducer } from 'redux-react-session';
@@ -22,8 +22,7 @@ const reducers = {
 };
 const reducer = combineReducers(reducers);
 ```
-
-2. Initiate the session service:
+- Initiate the session service:
 ```javascript
 import { createStore } from 'redux';
 import { sessionService } from 'redux-react-session';
