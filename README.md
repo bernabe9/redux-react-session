@@ -35,7 +35,7 @@ sessionService.initSessionService(store);
 
 ## API
 
-#### initSessionService(store, refreshOnCheckAuth:Boolean, redirectPath:String)
+### initSessionService(store, refreshOnCheckAuth:Boolean, redirectPath:String)
 Initialize a singleton instance of the session service.
 
 Options:
@@ -48,7 +48,7 @@ Force to refresh the Redux Store from the localStorage.
 
 Note: this function is called once the session service is initialized
 
-#### checkAuth
+### checkAuth
 Authorization function for [react-router](https://github.com/ReactTraining/react-router) to restrict routes, it checks if exist a session and redirects to the `redirectPath`
 
 Example:
@@ -68,8 +68,8 @@ export default (
 );
 ```
 
-#### isLogged : Promise(currentSession:Object)
-Check if exists a session persited in the localStorage
+### isLogged : Promise(currentSession:Object)
+Check if exists a session persisted in the localStorage
 
 Example:
 ```javascript 
@@ -78,22 +78,22 @@ isLogged
 .catch(() => console.log("Upss there aren't any session"))
 ```
 
-#### saveSession(session:object) : Promise
+### saveSession(session:object) : Promise
 Saves the session object in the localStorage and changes the `authenticated` flag to `true` in Redux Store
 
-#### loadSession : Promise(currentSession:Object)
+### loadSession : Promise(currentSession:Object)
 Returns the current session or an error
 
-#### deleteSession : Promise
+### deleteSession : Promise
 Deletes the current session
 
-#### saveUser(user:object) : Promise
+### saveUser(user:object) : Promise
 Saves the user object in the localStorage and in the Redux Store
 
-#### loadUser : Promise
+### loadUser : Promise
 Returns the current user or an error
 
-#### deleteUser : Promise
+### deleteUser : Promise
 Deletes the current user
 
 
