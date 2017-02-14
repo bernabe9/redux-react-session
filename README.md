@@ -87,7 +87,7 @@ Deletes the current session
 Saves the user object in the localStorage and in the Redux Store
 
 ### loadUser : Promise
-Returns the current user or an error
+Returns the current user if exists
 
 ### deleteUser : Promise
 Deletes the current user
