@@ -1,6 +1,7 @@
 # Redux React Session
 
 [![NPM version](https://img.shields.io/npm/v/redux-react-session.svg?style=flat)](https://npmjs.org/package/redux-react-session)
+[![Dependency Status](https://img.shields.io/david/bernabe9/redux-react-session.svg)](https://david-dm.org/bernabe9/redux-react-session)
 
 Keep your session sync with localStorage and Redux :key:
 
