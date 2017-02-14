@@ -1,6 +1,6 @@
 # Redux React Session
 
-[![NPM version][npm-image]][npm-url]
+[![NPM version](https://img.shields.io/npm/v/redux-react-session.svg?style=flat)](https://npmjs.org/package/redux-react-session)
 
 Keep your session sync with localStorage and Redux :key:
 
@@ -91,7 +91,3 @@ Returns the current user if exists
 
 ### deleteUser : Promise
 Deletes the current user
-
-
-[npm-image]: https://img.shields.io/badge/npm-v1.0.4-blue.svg
-[npm-url]: https://npmjs.org/package/redux-react-session
