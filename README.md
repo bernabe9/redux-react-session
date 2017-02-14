@@ -2,7 +2,7 @@
 
 [![NPM version][npm-image]][npm-url]
 
-Keep your session sync with localStorage and redux
+Keep your session sync with localStorage and Redux :key:
 
 Redux React Session provides an API that allows to manage sessions through the app, with authorization function for [react-router](https://github.com/ReactTraining/react-router) and a persisted session.
 
@@ -67,8 +67,11 @@ export default (
 );
 ```
 
-### isLogged : Promise(currentSession:Object)
-Check if exists a session persisted in the localStorage
+### saveSession(session:object) : Promise
+Saves the session object in the localStorage and changes the `authenticated` flag to `true` in Redux Store
+
+### loadSession : Promise(currentSession:Object)
+Returns the current session if exists
 
 Example:
 ```javascript 
@@ -76,12 +79,6 @@ isLogged
 .then(currentSession => console.log(currentSession))
 .catch(() => console.log("Upss there aren't any session"))
 ```
-
-### saveSession(session:object) : Promise
-Saves the session object in the localStorage and changes the `authenticated` flag to `true` in Redux Store
-
-### loadSession : Promise(currentSession:Object)
-Returns the current session or an error
 
 ### deleteSession : Promise
 Deletes the current session
