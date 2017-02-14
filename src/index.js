@@ -27,7 +27,7 @@ export class sessionService {
   }
 
   static refreshFromLocalStorage() {
-    sessionService.isLogged()
+    sessionService.loadSession()
     .then(() => {
       instance.store.dispatch(getSessionSuccess());
       sessionService.loadUser().then((user) => {
@@ -41,7 +41,7 @@ export class sessionService {
 
   static checkAuth(nextState, replace, next) {
     const { refreshOnCheckAuth, store } = instance;
-    sessionService.isLogged()
+    sessionService.loadSession()
     .then(() => {
       refreshOnCheckAuth && store.dispatch(getSessionSuccess());
       sessionService.loadUser().then((user) => {
@@ -59,16 +59,24 @@ export class sessionService {
     });
   }
 
-  static loadSession() {
-    return localForage.getItem(constant.USER_SESSION)
-    .then(value => value)
-    .catch(err => err);
-  }
-
   static saveSession(session) {
     return localForage.setItem(constant.USER_SESSION, session)
     .then(() => instance.store.dispatch(getSessionSuccess()))
     .catch(() => instance.store.dispatch(getSessionError()));
+  }
+
+  static loadSession() {
+    return new Promise((resolve, reject) => {
+      localForage.getItem(constant.USER_SESSION)
+      .then((currentSession) => {
+        if (currentSession) {
+          resolve(currentSession);
+        } else {
+          reject('Session not found');
+        }
+      })
+      .catch(err => err);
+    });
   }
 
   static deleteSession() {
@@ -84,27 +92,22 @@ export class sessionService {
     });
   }
 
+  static loadUser() {
+    return new Promise((resolve, reject) => {
+      localForage.getItem(constant.USER_DATA)
+      .then((currentUser) => {
+        if (currentUser) {
+          resolve(currentUser);
+        } else {
+          reject('User not found');
+        }
+      })
+      .catch(err => err);
+    });
+  }
+
   static deleteUser() {
     return localForage.removeItem(constant.USER_DATA);
-  }
-
-  static loadUser() {
-    return localForage.getItem(constant.USER_DATA)
-    .then(value => value)
-    .catch(err => err);
-  }
-
-  static isLogged() {
-    return new Promise((resolve, reject) => {
-      sessionService.loadSession()
-      .then((currentSession) => {
-        if (currentSession && currentSession.token) {
-          resolve(currentSession);
-        } else {
-          reject();
-        }
-      });
-    });
   }
 }
 
