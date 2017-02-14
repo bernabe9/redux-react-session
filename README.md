@@ -39,8 +39,8 @@ Initialize a singleton instance of the session service.
 
 Options:
 - store: Mandatory option, is used to keep sync the localStorage with Redux store
-- refreshOnCheckAuth(default: false): Refresh Redux store in the `checkAuth` function
-- redirectPath(default: "login"): Path used when a session is rejected or doesn't exist
+- refreshOnCheckAuth(**default**: false): Refresh Redux store in the `checkAuth` function
+- redirectPath(**default**: `"login"`): Path used when a session is rejected or doesn't exist
 
 ### refreshFromLocalStorage
 Force to refresh the Redux Store from the localStorage.
@@ -75,9 +75,9 @@ Returns the current session if exists
 
 Example:
 ```javascript 
-isLogged
+loadSession
 .then(currentSession => console.log(currentSession))
-.catch(() => console.log("Upss there aren't any session"))
+.catch(err => console.log(err))
 ```
 
 ### deleteSession : Promise
