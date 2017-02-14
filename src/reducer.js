@@ -15,7 +15,7 @@ const reducer = (state = initialState, action) => {
       return { user: { ...state.user }, authenticated: true };
     }
     case GET_SESSION_ERROR: {
-      return { user: { ...state.user }, authenticated: true };
+      return { user: { ...state.user }, authenticated: true };
     }
     case GET_USER_SESSION_SUCCESS: {
       return { ...state, user: action.user };
