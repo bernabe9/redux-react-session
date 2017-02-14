@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rm -r dist && babel src --out-dir dist",
+    "build": "babel src --out-dir dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint src"
   },
@@ -43,10 +43,15 @@
     "eslint-plugin-import": "2.2.0",
     "react": "15.4.2",
     "react-dom": "15.4.2",
+    "redux": "3.6.0",
     "webpack": "2.2.1"
   },
   "dependencies": {
-    "localforage": "1.4.3",
-    "react-router": "3.0.1"
+    "localforage": "^1.4.0",
+    "react-router": "^2.3.0 || ^3.0.0"
+  },
+  "peerDependencies": {
+    "react": "^0.14.0 || ^15.0.0",
+    "redux": "^3.0.0"
   }
 }
