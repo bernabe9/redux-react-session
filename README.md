@@ -51,7 +51,7 @@ Note: this function is called once the session service is initialized
 Authorization function for [react-router](https://github.com/ReactTraining/react-router) to restrict routes, it checks if exist a session and redirects to the `redirectPath`
 
 Example:
-```javascript 
+```javascript
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 import { sessionService } from 'redux-react-session';
@@ -74,7 +74,7 @@ Saves the session object in the localStorage and changes the `authenticated` fla
 Returns the current session if exists
 
 Example:
-```javascript 
+```javascript
 loadSession
 .then(currentSession => console.log(currentSession))
 .catch(err => console.log(err))
@@ -93,5 +93,5 @@ Returns the current user if exists
 Deletes the current user
 
 
-[npm-image]: https://img.shields.io/badge/npm-v1.0.2-blue.svg
+[npm-image]: https://img.shields.io/badge/npm-v1.0.4-blue.svg
 [npm-url]: https://npmjs.org/package/redux-react-session
