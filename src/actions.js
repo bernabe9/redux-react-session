@@ -1,7 +1,8 @@
 import {
   GET_SESSION_SUCCESS,
   GET_SESSION_ERROR,
-  GET_USER_SESSION_SUCCESS
+  GET_USER_SESSION_SUCCESS,
+  GET_USER_SESSION_ERROR
 } from './actionTypes';
 
 export const getSessionSuccess = () => {
@@ -17,4 +18,8 @@ export const getUserSessionSuccess = (user) => {
     user,
     type: GET_USER_SESSION_SUCCESS
   };
+};
+
+export const getUserSessionError = () => {
+  return { type: GET_USER_SESSION_ERROR };
 };
