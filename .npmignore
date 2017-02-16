@@ -5,5 +5,8 @@ node_modules
 # Source folder
 src
 
+# Example folder
+example
+
 # Mac files
 .DS_Store
