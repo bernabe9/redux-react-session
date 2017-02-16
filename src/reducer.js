@@ -1,7 +1,8 @@
 import {
   GET_SESSION_SUCCESS,
   GET_SESSION_ERROR,
-  GET_USER_SESSION_SUCCESS
+  GET_USER_SESSION_SUCCESS,
+  GET_USER_SESSION_ERROR
 } from './actionTypes';
 
 export const initialState = {
@@ -19,6 +20,9 @@ const reducer = (state = initialState, action) => {
     }
     case GET_USER_SESSION_SUCCESS: {
       return { ...state, user: action.user };
+    }
+    case GET_USER_SESSION_ERROR: {
+      return { ...state, user: {} };
     }
     default: {
       return state;

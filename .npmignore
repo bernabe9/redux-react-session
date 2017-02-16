@@ -8,5 +8,11 @@ src
 # Example folder
 example
 
+# Mocks folder
+__mocks__
+
+# Coverage folder
+coverage
+
 # Mac files
 .DS_Store

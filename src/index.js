@@ -1,10 +1,11 @@
 import * as constant from './constants';
-import * as localForage from 'localforage';
+import { setItem, getItem, removeItem } from 'localforage';
 import { browserHistory } from 'react-router';
 import {
   getSessionSuccess,
   getSessionError,
-  getUserSessionSuccess
+  getUserSessionSuccess,
+  getUserSessionError
 } from './actions';
 import reducer from './reducer';
 
@@ -60,14 +61,14 @@ export class sessionService {
   }
 
   static saveSession(session) {
-    return localForage.setItem(constant.USER_SESSION, session)
+    return setItem(constant.USER_SESSION, session)
     .then(() => instance.store.dispatch(getSessionSuccess()))
     .catch(() => instance.store.dispatch(getSessionError()));
   }
 
   static loadSession() {
     return new Promise((resolve, reject) => {
-      localForage.getItem(constant.USER_SESSION)
+      getItem(constant.USER_SESSION)
       .then((currentSession) => {
         if (currentSession) {
           resolve(currentSession);
@@ -80,21 +81,21 @@ export class sessionService {
   }
 
   static deleteSession() {
-    return localForage.removeItem(constant.USER_SESSION).then(() => {
+    return removeItem(constant.USER_SESSION).then(() => {
       instance.store.dispatch(getSessionError());
       browserHistory.replace(instance.redirectPath);
     });
   }
 
   static saveUser(user) {
-    return localForage.setItem(constant.USER_DATA, user).then((user) => {
-      instance.store.dispatch(getUserSessionSuccess(user));
-    });
+    return setItem(constant.USER_DATA, user)
+    .then((user) => instance.store.dispatch(getUserSessionSuccess(user)))
+    .catch(() => instance.store.dispatch(getUserSessionError(user)));
   }
 
   static loadUser() {
     return new Promise((resolve, reject) => {
-      localForage.getItem(constant.USER_DATA)
+      getItem(constant.USER_DATA)
       .then((currentUser) => {
         if (currentUser) {
           resolve(currentUser);
@@ -107,7 +108,9 @@ export class sessionService {
   }
 
   static deleteUser() {
-    return localForage.removeItem(constant.USER_DATA);
+    return removeItem(constant.USER_DATA).then(() => {
+      instance.store.dispatch(getUserSessionError());
+    });
   }
 }
 
