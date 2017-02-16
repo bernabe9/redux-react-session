@@ -1,7 +1,7 @@
 # Redux React Session
 
 [![NPM version](https://img.shields.io/npm/v/redux-react-session.svg?style=flat)](https://npmjs.org/package/redux-react-session)
-[![Build status: Linux](https://img.shields.io/travis/bernabe9/redux-react-session.svg?style=flat-square)](https://travis-ci.org/bernabe9/redux-react-session)
+[![Build status: Linux](https://img.shields.io/travis/bernabe9/redux-react-session.svg?style=flat)](https://travis-ci.org/bernabe9/redux-react-session)
 [![Dependency Status](https://img.shields.io/david/bernabe9/redux-react-session.svg)](https://david-dm.org/bernabe9/redux-react-session)
 [![Coverage Status](https://coveralls.io/repos/github/bernabe9/redux-react-session/badge.svg?branch=master)](https://coveralls.io/github/bernabe9/redux-react-session?branch=master)
 
@@ -34,6 +34,13 @@ const store = createStore(reducer)
 
 sessionService.initSessionService(store);
 ```
+## Example
+The example simulates a simple login/logut that sends requests to a server.
+
+### Run the example
+1. **get into the folder**:`cd example`
+2. **install dependencies**: `npm install`
+3. **run the example**: `npm start`
 
 ## API
 
@@ -94,11 +101,3 @@ Returns the current user if exists
 
 ### deleteUser : Promise
 Deletes the current user
-
-## Example
-The example simulates a simple login/logut that send requests to a server.
-
-### Run the example
-1. **get into the folder**:`cd example`
-2. **install dependencies**: `npm install`
-3. **run the example**: `npm start`
