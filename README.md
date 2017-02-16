@@ -92,3 +92,11 @@ Returns the current user if exists
 
 ### deleteUser : Promise
 Deletes the current user
+
+## Example
+The example simulates a simple login/logut that send requests to a server.
+
+### Run the example
+1. **get into the folder**:`cd example`
+2. **install dependencies**: `npm install`
+3. **run the example**: `npm start`
