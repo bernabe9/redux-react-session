@@ -88,9 +88,9 @@ export class sessionService {
   }
 
   static saveUser(user) {
-    return setItem(constant.USER_DATA, user).then((user) => {
-      instance.store.dispatch(getUserSessionSuccess(user));
-    });
+    return setItem(constant.USER_DATA, user)
+    .then((user) => instance.store.dispatch(getUserSessionSuccess(user)))
+    .catch(() => instance.store.dispatch(getUserSessionError(user)));
   }
 
   static loadUser() {

@@ -17,5 +17,8 @@ node_modules
 #dist folder
 dist
 
+#coverage folder
+coverage
+
 # Mac files
 .DS_Store

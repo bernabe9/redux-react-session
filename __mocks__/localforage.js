@@ -20,9 +20,14 @@ function __setSession(item) {
   session = item;
 }
 
-function setItem() {
+function setItem(item, data) {
   return new Promise((resolve, reject) => {
-    throwError ? reject() : resolve();
+    if (item === USER_SESSION) {
+      session = data;
+    } else if (item === USER_DATA) {
+      user = data;
+    }
+    throwError ? reject() : resolve(data);
   });
 }
 
@@ -36,8 +41,20 @@ function getItem(item) {
   });
 }
 
+function removeItem(item) {
+  return new Promise((resolve) => {
+    if (item === USER_SESSION) {
+      session = undefined;
+    } else if (item === USER_DATA) {
+      user = undefined;
+    }
+    resolve();
+  });
+}
+
 localforage.setItem = setItem;
 localforage.getItem = getItem;
+localforage.removeItem = removeItem;
 localforage.__setError = __setError;
 localforage.__setUser = __setUser;
 localforage.__setSession = __setSession;
