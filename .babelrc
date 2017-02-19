@@ -6,8 +6,7 @@
   "env": {
     "development": {
       "presets": [
-        "latest",
-        "react-hmre"
+        "latest"
       ]
     },
     "production": {
@@ -17,10 +16,6 @@
             "modules": false
           }
         }],
-      ],
-      "plugins": [
-        "transform-react-constant-elements",
-        "transform-react-remove-prop-types"
       ]
     },
     "test": {

@@ -22,13 +22,19 @@ export class sessionService {
     return instance;
   }
 
+  static setOptions(store, refreshOnCheckAuth = false, redirectPath = 'login') {
+    instance.store = store;
+    instance.refreshOnCheckAuth = refreshOnCheckAuth;
+    instance.redirectPath = redirectPath;
+  }
+
   static initSessionService(store, refreshOnCheckAuth = false, redirectPath = 'login') {
     instance = new sessionService(store, refreshOnCheckAuth, redirectPath);
     sessionService.refreshFromLocalStorage();
   }
 
   static refreshFromLocalStorage() {
-    sessionService.loadSession()
+    return sessionService.loadSession()
     .then(() => {
       instance.store.dispatch(getSessionSuccess());
       sessionService.loadUser().then((user) => {
@@ -52,6 +58,7 @@ export class sessionService {
     })
     .catch(() => {
       refreshOnCheckAuth && store.dispatch(getSessionError());
+      refreshOnCheckAuth && store.dispatch(getUserSessionError());
       replace({
         pathname: instance.redirectPath,
         state: { nextPathname: nextState.location.pathname }
@@ -84,7 +91,7 @@ export class sessionService {
     return removeItem(constant.USER_SESSION).then(() => {
       instance.store.dispatch(getSessionError());
       browserHistory.replace(instance.redirectPath);
-    });
+    }).catch(err => err);
   }
 
   static saveUser(user) {
@@ -110,7 +117,7 @@ export class sessionService {
   static deleteUser() {
     return removeItem(constant.USER_DATA).then(() => {
       instance.store.dispatch(getUserSessionError());
-    });
+    }).catch(err => err);
   }
 }
 
