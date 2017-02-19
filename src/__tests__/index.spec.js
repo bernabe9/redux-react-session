@@ -60,6 +60,100 @@ describe('API functions', () => {
     });
   });
 
+  describe('checkAuth', () => {
+    let nextState;
+    let replace;
+    let next;
+    beforeEach(() => {
+      nextState = { location: { pathname: 'test' } };
+      replace = jest.fn();
+      next = jest.fn();
+    });
+
+    describe('with logged user', () => {
+      beforeEach(() => {
+        __setUser(user);
+        __setSession(session);
+      });
+
+      test('does call next function', (done) => {
+        const next = jest.fn(() => {
+          expect(next).toHaveBeenCalled();
+          done();
+        });
+        sessionService.checkAuth(nextState, replace, next);
+      });
+
+      describe('with option refreshOnCheckAuth enable', () => {
+        test('change authenticated flag to true and save the user', (done) => {
+          sessionService.setOptions(store, true);
+          // wait for change the redux store
+          const unsubscribe = store.subscribe(() => {
+            const state = store.getState();
+            expect(state.authenticated).toEqual(true);
+            // wait to change the user
+            const { user } = state;
+            if (!(Object.keys(user).length === 0 && user.constructor === Object)) {
+              expect(state.user).toMatchObject(user);
+              unsubscribe();
+              done();
+            }
+          });
+
+          sessionService.checkAuth(nextState, replace, next);
+        });
+      });
+    });
+
+    describe('without logged user', () => {
+      beforeEach(() => {
+        __setUser(undefined);
+        __setSession(undefined);
+        sessionService.setOptions(store, false, 'redirectionPath');
+      });
+
+      test('does call replace function', (done) => {
+        const replace = jest.fn(() => {
+          expect(replace).toHaveBeenCalled();
+          done();
+        });
+        sessionService.checkAuth(nextState, replace, next);
+      });
+
+      test('does redirect to the redirectPath', (done) => {
+        const expectedArg = {
+          pathname: 'redirectionPath',
+          state: { nextPathname: nextState.location.pathname }
+        };
+        const replace = jest.fn(() => {
+          expect(replace).toHaveBeenCalledWith(expectedArg);
+          done();
+        });
+        sessionService.checkAuth(nextState, replace, next);
+      });
+
+      describe('with option refreshOnCheckAuth enable', () => {
+        test('change authenticated flag to false and the user to empty object', (done) => {
+          sessionService.setOptions(store, true);
+          // wait for change the redux store
+          const unsubscribe = store.subscribe(() => {
+            const state = store.getState();
+            expect(state.authenticated).toEqual(false);
+            // wait to empty the user
+            const { user } = state;
+            if ((Object.keys(user).length === 0 && user.constructor === Object)) {
+              expect(state.user).toEqual({});
+              unsubscribe();
+              done();
+            }
+          });
+
+          sessionService.checkAuth(nextState, replace, next);
+        });
+      });
+    });
+  });
+
   describe('saveSession', () => {
     describe('localforage returns success', () => {
       test('change authenticated flag to true value', (done) => {
