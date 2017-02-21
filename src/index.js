@@ -83,7 +83,7 @@ export class sessionService {
           reject('Session not found');
         }
       })
-      .catch(err => err);
+      .catch(err => reject(err));
     });
   }
 
@@ -110,7 +110,7 @@ export class sessionService {
           reject('User not found');
         }
       })
-      .catch(err => err);
+      .catch(err => reject(err));
     });
   }
 
