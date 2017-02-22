@@ -1,5 +1,5 @@
 import * as constant from './constants';
-import { setItem, getItem, removeItem } from 'localforage';
+import * as localForage from 'localforage';
 import { browserHistory } from 'react-router';
 import {
   getSessionSuccess,
@@ -68,14 +68,14 @@ export class sessionService {
   }
 
   static saveSession(session) {
-    return setItem(constant.USER_SESSION, session)
+    return localForage.setItem(constant.USER_SESSION, session)
     .then(() => instance.store.dispatch(getSessionSuccess()))
     .catch(() => instance.store.dispatch(getSessionError()));
   }
 
   static loadSession() {
     return new Promise((resolve, reject) => {
-      getItem(constant.USER_SESSION)
+      localForage.getItem(constant.USER_SESSION)
       .then((currentSession) => {
         if (currentSession) {
           resolve(currentSession);
@@ -88,21 +88,21 @@ export class sessionService {
   }
 
   static deleteSession() {
-    return removeItem(constant.USER_SESSION).then(() => {
+    return localForage.removeItem(constant.USER_SESSION).then(() => {
       instance.store.dispatch(getSessionError());
       browserHistory.replace(instance.redirectPath);
     }).catch(err => err);
   }
 
   static saveUser(user) {
-    return setItem(constant.USER_DATA, user)
+    return localForage.setItem(constant.USER_DATA, user)
     .then((user) => instance.store.dispatch(getUserSessionSuccess(user)))
     .catch(() => instance.store.dispatch(getUserSessionError(user)));
   }
 
   static loadUser() {
     return new Promise((resolve, reject) => {
-      getItem(constant.USER_DATA)
+      localForage.getItem(constant.USER_DATA)
       .then((currentUser) => {
         if (currentUser) {
           resolve(currentUser);
@@ -115,7 +115,7 @@ export class sessionService {
   }
 
   static deleteUser() {
-    return removeItem(constant.USER_DATA).then(() => {
+    return localForage.removeItem(constant.USER_DATA).then(() => {
       instance.store.dispatch(getUserSessionError());
     }).catch(err => err);
   }
