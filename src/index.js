@@ -1,6 +1,5 @@
 import * as constant from './constants';
 import * as localForage from 'localforage';
-import { browserHistory } from 'react-router';
 import {
   getSessionSuccess,
   getSessionError,
@@ -90,7 +89,6 @@ export class sessionService {
   static deleteSession() {
     return localForage.removeItem(constant.USER_SESSION).then(() => {
       instance.store.dispatch(getSessionError());
-      browserHistory.replace(instance.redirectPath);
     }).catch(err => err);
   }
 
