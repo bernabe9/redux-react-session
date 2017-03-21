@@ -34,13 +34,19 @@ const store = createStore(reducer)
 
 sessionService.initSessionService(store);
 ```
-## Example
-The example simulates a simple login/logut that sends requests to a server.
+## Examples
+The examples simulates a simple login/logut that sends requests to a server.
 
 ### Run the example
-1. **get into the folder**:`cd example`
+1. **get into the folder**:`cd examples/example`
 2. **install dependencies**: `npm install`
 3. **run the example**: `npm start`
+
+### Run the example for react router v4
+1. **get into the folder**:`cd examples/react-router-v4-example`
+2. **install dependencies**: `npm install`
+3. **run the example**: `npm start`
+
 
 ## API
 
