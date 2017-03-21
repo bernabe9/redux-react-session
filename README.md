@@ -83,6 +83,8 @@ export default (
 );
 ```
 
+Note: If you're using react-router v4 this function it's not necessary. Check out the [react-router-v4-example](https://github.com/bernabe9/redux-react-session/tree/master/examples/react-router-v4-example)
+
 ### saveSession(session:object) : Promise
 Saves the session object in the localStorage and changes the `authenticated` flag to `true` in Redux Store
 
