@@ -1,5 +1,6 @@
 import * as constant from './constants';
 import * as localForage from 'localforage';
+import * as Cookies from "js-cookie";
 import {
   getSessionSuccess,
   getSessionError,
@@ -67,9 +68,18 @@ export class sessionService {
   }
 
   static saveSession(session) {
-    return localForage.setItem(constant.USER_SESSION, session)
-    .then(() => instance.store.dispatch(getSessionSuccess()))
-    .catch(() => instance.store.dispatch(getSessionError()));
+    return new Promise((resolve) => {
+      localForage.setItem(constant.USER_SESSION, session)
+      .then(() => {
+        instance.store.dispatch(getSessionSuccess());
+        resolve();
+      })
+      .catch(() => {
+        Cookies.set(constant.USER_SESSION, session);
+        instance.store.dispatch(getSessionSuccess());
+        resolve();
+      });
+    });
   }
 
   static loadSession() {
@@ -79,7 +89,8 @@ export class sessionService {
         if (currentSession) {
           resolve(currentSession);
         } else {
-          reject('Session not found');
+          const cookies = Cookies.getJSON(constant.USER_SESSION);
+          cookies ? resolve(cookies) : reject('Session not found');
         }
       })
       .catch(err => reject(err));
@@ -89,13 +100,23 @@ export class sessionService {
   static deleteSession() {
     return localForage.removeItem(constant.USER_SESSION).then(() => {
       instance.store.dispatch(getSessionError());
-    }).catch(err => err);
+      Cookies.remove(constant.USER_SESSION);
+    });
   }
 
   static saveUser(user) {
-    return localForage.setItem(constant.USER_DATA, user)
-    .then((user) => instance.store.dispatch(getUserSessionSuccess(user)))
-    .catch(() => instance.store.dispatch(getUserSessionError(user)));
+    return new Promise((resolve) => {
+      localForage.setItem(constant.USER_DATA, user)
+      .then((user) => {
+        instance.store.dispatch(getUserSessionSuccess(user));
+        resolve();
+      })
+      .catch(() => {
+        instance.store.dispatch(getUserSessionSuccess(user));
+        Cookies.set(constant.USER_DATA, user);
+        resolve();
+      });
+    });
   }
 
   static loadUser() {
@@ -105,7 +126,8 @@ export class sessionService {
         if (currentUser) {
           resolve(currentUser);
         } else {
-          reject('User not found');
+          const cookies = Cookies.getJSON(constant.USER_DATA);
+          cookies ? resolve(cookies) : reject('User not found');
         }
       })
       .catch(err => reject(err));
@@ -115,7 +137,8 @@ export class sessionService {
   static deleteUser() {
     return localForage.removeItem(constant.USER_DATA).then(() => {
       instance.store.dispatch(getUserSessionError());
-    }).catch(err => err);
+      Cookies.remove(constant.USER_DATA);
+    });
   }
 }
 

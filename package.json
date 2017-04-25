@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "npm run clean && babel src --out-dir dist",
-    "test": "jest",
+    "test": "jest /src/__tests__",
     "test:cover": "npm run test -- --coverage",
     "test:cover:CI": "npm run test:cover && cat ./coverage/lcov.info | node_modules/coveralls/bin/coveralls.js",
     "lint": "eslint src",
@@ -51,7 +51,8 @@
     "webpack": "2.2.1"
   },
   "dependencies": {
-    "localforage": "^1.4.0 || ^1.5.0"
+    "localforage": "^1.4.0 || ^1.5.0",
+    "js-cookie": "2.1.4"
   },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.0.0",

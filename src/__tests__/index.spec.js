@@ -4,6 +4,7 @@ import { sessionService, sessionReducer } from '../index';
 import { initialState } from '../reducer';
 import { createStore } from 'redux';
 import { __setError, __setSession, __setUser } from 'localforage';
+import * as Cookies from "js-cookie";
 
 jest.mock('localforage');
 
@@ -170,15 +171,14 @@ describe('API functions', () => {
     });
 
     describe('localforage returns error', () => {
-      test('change authenticated flag to false value', (done) => {
+      beforeEach(() => {
         __setError(true);
-        // wait for change the redux store
-        const unsubscribe = store.subscribe(() => {
-          expect(store.getState().authenticated).toEqual(false);
-          unsubscribe();
-          done();
-        });
+      });
 
+      test('call the cookies service to save the data', () => {
+        Cookies.set = jest.fn(() => {
+          expect(Cookies.set).toHaveBeenCalled();
+        });
         sessionService.saveSession(session);
       });
     });
