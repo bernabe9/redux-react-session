@@ -10,6 +10,12 @@ Keep your session sync with localStorage and Redux :key:
 Redux React Session provides an API that allows to manage sessions through the app, with authorization function for [react-router](https://github.com/ReactTraining/react-router) and a persisted session.
 
 ## Installation
+yarn:
+
+`yarn add redux-react-session`
+
+npm:
+
 `npm install redux-react-session --save`
 
 ## Usage
@@ -109,3 +115,59 @@ Returns the current user if exists
 
 ### deleteUser : Promise
 Deletes the current user
+
+## Server Rendering
+`redux-react-session` also provides methods to keep the session with server rendering using cookies. So the session will work on the server side as well as the client side.
+
+### initServerSession(store, refreshOnCheckAuth:Boolean, redirectPath:String)
+Initialize an instance of the server session service.
+
+This function is used in the `server.js` to initialize a session service instance in each request.
+```javascript
+// server.js
+import { sessionService } from 'redux-react-session';
+
+// ...
+app.use((req, res) => {
+  const store = createStrore();
+  sessionService.initServerSession(store, req);
+  // ...
+}
+// ...
+```
+
+### initClientSession(store, refreshOnCheckAuth:Boolean, redirectPath:String)
+Initialize an instance of the client session service.
+
+This function is used in the `client.js` of the server rendering to initialize a session service instance.
+```javascript
+// client.js
+import { createStore } from 'redux';
+import { sessionService } from 'redux-react-session';
+
+const store = createStore(reducer)
+
+sessionService.initClientSession(store);
+```
+
+### checkAuthServer
+Authorization function for [react-router](https://github.com/ReactTraining/react-router) to restrict routes, it checks if exist a session and redirects to the `redirectPath`.
+
+The difference between `checkAuthServer` and `checkAuth` is that the first one is used in the server side and check the authorization with the cookies in the request.
+
+```javascript
+// routes.js
+import React from 'react';
+import { Route, IndexRoute } from 'react-router';
+import { sessionService } from 'redux-react-session';
+import App from './components/App';
+import HomePage from './containers/HomePage';
+import LoginPage from './containers/LoginPage';
+
+export default (
+  <Route path="/" component={App}>
+    <IndexRoute onEnter={sessionService.checkAuthServer} component={HomePage} />
+    <Route path="login" component={LoginPage} />
+  </Route>
+);
+```
