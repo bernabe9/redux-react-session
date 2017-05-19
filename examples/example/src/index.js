@@ -17,7 +17,7 @@ const reducer = combineReducers({
 const store = createStore(reducer, undefined, compose(applyMiddleware(thunkMiddleware)));
 
 // Init the session service
-sessionService.initSessionService(store);
+sessionService.initServerSession(store);
 
 render(
   <Provider store={store}>

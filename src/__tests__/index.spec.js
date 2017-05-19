@@ -87,7 +87,7 @@ describe('API functions', () => {
 
       describe('with option refreshOnCheckAuth enable', () => {
         test('change authenticated flag to true and save the user', (done) => {
-          sessionService.setOptions(store, true);
+          sessionService.setOptions(store, { refreshOnCheckAuth: true });
           // wait for change the redux store
           const unsubscribe = store.subscribe(() => {
             const state = store.getState();
@@ -110,7 +110,7 @@ describe('API functions', () => {
       beforeEach(() => {
         __setUser(undefined);
         __setSession(undefined);
-        sessionService.setOptions(store, false, 'redirectionPath');
+        sessionService.setOptions(store, { refreshOnCheckAuth: false, redirectPath: 'redirectionPath' });
       });
 
       test('does call replace function', (done) => {
@@ -135,7 +135,7 @@ describe('API functions', () => {
 
       describe('with option refreshOnCheckAuth enable', () => {
         test('change authenticated flag to false and the user to empty object', (done) => {
-          sessionService.setOptions(store, true);
+          sessionService.setOptions(store, { refreshOnCheckAuth: true });
           // wait for change the redux store
           const unsubscribe = store.subscribe(() => {
             const state = store.getState();
