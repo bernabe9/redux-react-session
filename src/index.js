@@ -49,13 +49,13 @@ export class sessionService {
 
       return list;
     };
-    sessionService.refreshFromClient(parseCookies(req));
+    sessionService.saveFromClient(parseCookies(req));
   }
 
-  static refreshFromClient(cookies) {
+  static saveFromClient(cookies) {
     if (Object.keys(cookies).length > 0) {
-      sessionService.saveSession(cookies[USER_SESSION]);
-      sessionService.saveUser(cookies[USER_DATA]);
+      sessionService.saveSession(cookies[USER_SESSION])
+      .then(() => sessionService.saveUser(cookies[USER_DATA]));
     }
   }
 
@@ -152,7 +152,7 @@ export class sessionService {
     return new Promise((resolve) => {
       if (instance.server) {
         instance[USER_DATA] = user;
-        instance.store.dispatch(getSessionSuccess());
+        instance.store.dispatch(getUserSessionSuccess(user));
         resolve();
       } else if (instance.driver === 'COOKIES') {
         Cookies.set(USER_DATA, user);
