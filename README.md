@@ -127,7 +127,7 @@ Deletes the current user from the storage/cookies
 ## Server Rendering
 `redux-react-session` also provides methods to keep the session with server rendering using cookies. So the session will work on the server side as well as the client side.
 
-### initServerSession(store)
+### initServerSession(store, req)
 Initialize an instance of the server session service.
 
 This function is used in the `server.js` to initialize a session service instance in each request.
