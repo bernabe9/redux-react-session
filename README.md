@@ -41,7 +41,7 @@ const store = createStore(reducer)
 sessionService.initSessionService(store);
 ```
 ## Examples
-The examples simulates a simple login/logut that sends requests to a server.
+The examples simulates a simple login/logout that sends requests to a server.
 
 ### Run the example
 1. **get into the folder**:`cd examples/example`
@@ -56,13 +56,19 @@ The examples simulates a simple login/logut that sends requests to a server.
 
 ## API
 
-### initSessionService(store, refreshOnCheckAuth:Boolean, redirectPath:String)
-Initialize a singleton instance of the session service.
+### initSessionService(store, options)
+Initialize an instance of the session service.
 
 Options:
-- store: Mandatory option, is used to keep sync the localStorage with Redux store
 - refreshOnCheckAuth(**default**: false): Refresh Redux store in the `checkAuth` function
 - redirectPath(**default**: `"login"`): Path used when a session is rejected or doesn't exist
+- driver: Force to use a particular driver, should be: 'INDEXEDDB', 'WEBSQL', 'LOCALSTORAGE' or 'COOKIES'
+
+Example:
+```javascript
+const options = { refreshOnCheckAuth: true, redirectPath: '/home', driver: 'COOKIES' };
+sessionService.initSessionService(store, options);
+```
 
 ### refreshFromLocalStorage
 Force to refresh the Redux Store from the localStorage.
@@ -91,8 +97,10 @@ export default (
 
 Note: If you're using react-router v4 this function it's not necessary. Check out the [react-router-v4-example](https://github.com/bernabe9/redux-react-session/tree/master/examples/react-router-v4-example)
 
+Note: This function could be used in the client side as well as the server side.
+
 ### saveSession(session:object) : Promise
-Saves the session object in the localStorage and changes the `authenticated` flag to `true` in Redux Store
+Saves the session object in the storage/cookies and changes the `authenticated` flag to `true` in Redux Store
 
 ### loadSession : Promise(currentSession:Object)
 Returns the current session if exists
@@ -105,21 +113,21 @@ loadSession
 ```
 
 ### deleteSession : Promise
-Deletes the current session
+Deletes the current session from the storage/cookies
 
 ### saveUser(user:object) : Promise
-Saves the user object in the localStorage and in the Redux Store
+Saves the user object in the storage/cookies and in the Redux Store
 
 ### loadUser : Promise
 Returns the current user if exists
 
 ### deleteUser : Promise
-Deletes the current user
+Deletes the current user from the storage/cookies
 
 ## Server Rendering
 `redux-react-session` also provides methods to keep the session with server rendering using cookies. So the session will work on the server side as well as the client side.
 
-### initServerSession(store, refreshOnCheckAuth:Boolean, redirectPath:String)
+### initServerSession(store, req)
 Initialize an instance of the server session service.
 
 This function is used in the `server.js` to initialize a session service instance in each request.
@@ -136,8 +144,8 @@ app.use((req, res) => {
 // ...
 ```
 
-### initClientSession(store, refreshOnCheckAuth:Boolean, redirectPath:String)
-Initialize an instance of the client session service.
+### initSessionService(store, { driver: 'COOKIES' })
+Initialize an instance of the client session service, IMPORTANT to set the option 'COOKIES'(this is the way that the client send the session data to the server).
 
 This function is used in the `client.js` of the server rendering to initialize a session service instance.
 ```javascript
@@ -147,27 +155,5 @@ import { sessionService } from 'redux-react-session';
 
 const store = createStore(reducer)
 
-sessionService.initClientSession(store);
-```
-
-### checkAuthServer
-Authorization function for [react-router](https://github.com/ReactTraining/react-router) to restrict routes, it checks if exist a session and redirects to the `redirectPath`.
-
-The difference between `checkAuthServer` and `checkAuth` is that the first one is used in the server side and check the authorization with the cookies in the request.
-
-```javascript
-// routes.js
-import React from 'react';
-import { Route, IndexRoute } from 'react-router';
-import { sessionService } from 'redux-react-session';
-import App from './components/App';
-import HomePage from './containers/HomePage';
-import LoginPage from './containers/LoginPage';
-
-export default (
-  <Route path="/" component={App}>
-    <IndexRoute onEnter={sessionService.checkAuthServer} component={HomePage} />
-    <Route path="login" component={LoginPage} />
-  </Route>
-);
+initSessionService(store, { driver: 'COOKIES' });
 ```
