@@ -87,7 +87,7 @@ describe('API functions', () => {
 
       describe('with option refreshOnCheckAuth enable', () => {
         test('change authenticated flag to true and save the user', (done) => {
-          sessionService.setOptions(store, true);
+          sessionService.setOptions(store, { refreshOnCheckAuth: true });
           // wait for change the redux store
           const unsubscribe = store.subscribe(() => {
             const state = store.getState();
@@ -110,7 +110,7 @@ describe('API functions', () => {
       beforeEach(() => {
         __setUser(undefined);
         __setSession(undefined);
-        sessionService.setOptions(store, false, 'redirectionPath');
+        sessionService.setOptions(store, { refreshOnCheckAuth: false, redirectPath: 'redirectionPath' });
       });
 
       test('does call replace function', (done) => {
@@ -135,7 +135,7 @@ describe('API functions', () => {
 
       describe('with option refreshOnCheckAuth enable', () => {
         test('change authenticated flag to false and the user to empty object', (done) => {
-          sessionService.setOptions(store, true);
+          sessionService.setOptions(store, { refreshOnCheckAuth: true });
           // wait for change the redux store
           const unsubscribe = store.subscribe(() => {
             const state = store.getState();
@@ -156,9 +156,45 @@ describe('API functions', () => {
   });
 
   describe('saveSession', () => {
-    describe('localforage returns success', () => {
+    describe('with localforage', () => {
+      describe('localforage returns success', () => {
+        test('change authenticated flag to true value', (done) => {
+          __setError(false);
+          // wait for change the redux store
+          const unsubscribe = store.subscribe(() => {
+            expect(store.getState().authenticated).toEqual(true);
+            unsubscribe();
+            done();
+          });
+
+          sessionService.saveSession(session);
+        });
+      });
+
+      describe('localforage returns error', () => {
+        beforeEach(() => {
+          __setError(true);
+        });
+
+        test('call the cookies service to save the data', () => {
+          Cookies.set = jest.fn(() => {
+            expect(Cookies.set).toHaveBeenCalled();
+          });
+          sessionService.saveSession(session);
+        });
+      });
+    });
+
+    describe('with cookies', () => {
+      beforeEach(() => {
+        sessionService.setOptions(store, { driver: 'COOKIES' });
+      });
+
+      afterEach(() => {
+        sessionService.setOptions(store);
+      });
+
       test('change authenticated flag to true value', (done) => {
-        __setError(false);
         // wait for change the redux store
         const unsubscribe = store.subscribe(() => {
           expect(store.getState().authenticated).toEqual(true);
@@ -169,38 +205,44 @@ describe('API functions', () => {
         sessionService.saveSession(session);
       });
     });
-
-    describe('localforage returns error', () => {
-      beforeEach(() => {
-        __setError(true);
-      });
-
-      test('call the cookies service to save the data', () => {
-        Cookies.set = jest.fn(() => {
-          expect(Cookies.set).toHaveBeenCalled();
-        });
-        sessionService.saveSession(session);
-      });
-    });
   });
 
   describe('loadSession', () => {
-    describe('localforage returns success', () => {
-      test('return the correct value of the session stored', () => {
-        __setSession(session);
-        return sessionService.loadSession()
-        .then((currentSession) => {
-          expect(currentSession).toMatchObject(session);
+    describe('with localforage', () => {
+      describe('localforage returns success', () => {
+        test('return the correct value of the session stored', () => {
+          __setSession(session);
+          return sessionService.loadSession()
+          .then((currentSession) => {
+            expect(currentSession).toMatchObject(session);
+          });
+        });
+      });
+
+      describe('localforage returns error', () => {
+        test('return an error', () => {
+          __setSession(undefined);
+          return sessionService.loadSession()
+          .catch((error) => {
+            expect(error).toEqual('Session not found');
+          });
         });
       });
     });
 
-    describe('localforage returns error', () => {
-      test('return an error', () => {
-        __setSession(undefined);
+    describe('with cookies', () => {
+      beforeEach(() => {
+        sessionService.setOptions(store, { driver: 'COOKIES' });
+      });
+
+      afterEach(() => {
+        sessionService.setOptions(store);
+      });
+
+      test('return the correct value of the session stored', () => {
         return sessionService.loadSession()
-        .catch((error) => {
-          expect(error).toEqual('Session not found');
+        .then((currentSession) => {
+          expect(currentSession).toMatchObject(session);
         });
       });
     });
@@ -220,9 +262,46 @@ describe('API functions', () => {
   });
 
   describe('saveUser', () => {
-    describe('localforage returns success', () => {
+    describe('with localforage', () => {
+      describe('localforage returns success', () => {
+        test('change user in store to the user data', (done) => {
+          __setError(false);
+          // wait for change the redux store
+          const unsubscribe = store.subscribe(() => {
+            expect(store.getState().user).toMatchObject(user);
+            unsubscribe();
+            done();
+          });
+
+          sessionService.saveUser(user);
+        });
+      });
+
+      describe('localforage returns error', () => {
+        test('change user in store to an empty object', (done) => {
+          __setError(true);
+          // wait for change the redux store
+          const unsubscribe = store.subscribe(() => {
+            expect(store.getState().user).toMatchObject({});
+            unsubscribe();
+            done();
+          });
+
+          sessionService.saveUser(user);
+        });
+      });
+    });
+
+    describe('with cookies', () => {
+      beforeEach(() => {
+        sessionService.setOptions(store, { driver: 'COOKIES' });
+      });
+
+      afterEach(() => {
+        sessionService.setOptions(store);
+      });
+
       test('change user in store to the user data', (done) => {
-        __setError(false);
         // wait for change the redux store
         const unsubscribe = store.subscribe(() => {
           expect(store.getState().user).toMatchObject(user);
@@ -233,39 +312,44 @@ describe('API functions', () => {
         sessionService.saveUser(user);
       });
     });
-
-    describe('localforage returns error', () => {
-      test('change user in store to an empty object', (done) => {
-        __setError(true);
-        // wait for change the redux store
-        const unsubscribe = store.subscribe(() => {
-          expect(store.getState().user).toMatchObject({});
-          unsubscribe();
-          done();
-        });
-
-        sessionService.saveUser(user);
-      });
-    });
   });
 
   describe('loadUser', () => {
-    describe('localforage returns success', () => {
-      test('return the correct value of the user stored', () => {
-        __setUser(user);
-        return sessionService.loadUser()
-        .then((currentUser) => {
-          expect(currentUser).toMatchObject(user);
+    describe('with localforage', () => {
+      describe('localforage returns success', () => {
+        test('return the correct value of the user stored', () => {
+          __setUser(user);
+          return sessionService.loadUser()
+          .then((currentUser) => {
+            expect(currentUser).toMatchObject(user);
+          });
+        });
+      });
+
+      describe('localforage returns error', () => {
+        test('return an error', () => {
+          __setUser(undefined);
+          return sessionService.loadUser()
+          .catch((error) => {
+            expect(error).toEqual('User not found');
+          });
         });
       });
     });
 
-    describe('localforage returns error', () => {
-      test('return an error', () => {
-        __setUser(undefined);
+    describe('with cookies', () => {
+      beforeEach(() => {
+        sessionService.setOptions(store, { driver: 'COOKIES' });
+      });
+
+      afterEach(() => {
+        sessionService.setOptions(store);
+      });
+
+      test('return the correct value of the user stored', () => {
         return sessionService.loadUser()
-        .catch((error) => {
-          expect(error).toEqual('User not found');
+        .then((currentUser) => {
+          expect(currentUser).toMatchObject(user);
         });
       });
     });

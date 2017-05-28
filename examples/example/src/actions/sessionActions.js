@@ -5,7 +5,8 @@ import * as sessionApi from '../api/sessionApi';
 export const login = (user) => {
   return () => {
     return sessionApi.login(user).then(response => {
-      sessionService.saveSession(response.token)
+      const { token } = response;
+      sessionService.saveSession({ token })
       .then(() => {
         sessionService.saveUser(response.data)
         .then(() => {
