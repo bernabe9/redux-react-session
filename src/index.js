@@ -44,7 +44,9 @@ export class sessionService {
       const rc = req.get('cookie');
       rc && rc.split(';').forEach(cookie => {
         const parts = cookie.split('=');
-        list[parts[0].trim()] = JSON.parse(decodeURIComponent(parts[1]));
+        if (parts[0].trim() === USER_SESSION || parts[0].trim() === USER_DATA) {
+          list[parts[0].trim()] = JSON.parse(decodeURIComponent(parts[1]));
+        }
       });
 
       return list;
@@ -53,9 +55,13 @@ export class sessionService {
   }
 
   static saveFromClient(cookies) {
-    if (Object.keys(cookies).length > 0) {
+    if (cookies[USER_SESSION]) {
       sessionService.saveSession(cookies[USER_SESSION])
-      .then(() => sessionService.saveUser(cookies[USER_DATA]));
+      .then(() => {
+        if (cookies[USER_DATA]) {
+          sessionService.saveUser(cookies[USER_DATA]);
+        }
+      });
     }
   }
 
