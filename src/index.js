@@ -21,12 +21,14 @@ export class sessionService {
   static setOptions(store, {
     driver,
     refreshOnCheckAuth = false,
+    expires = 360,
     redirectPath = 'login',
     server = false
   } = {}) {
     instance.store = store;
     instance.refreshOnCheckAuth = refreshOnCheckAuth;
     instance.redirectPath = redirectPath;
+    instance.expires = expires;
     instance.driver = driver;
     instance.server = server;
     driver && driver !== 'COOKIES' && localForage.setDriver(localForage[driver]);
@@ -106,17 +108,17 @@ export class sessionService {
         instance.store.dispatch(getSessionSuccess());
         resolve();
       } else if (instance.driver === 'COOKIES') {
-        Cookies.set(USER_SESSION, session);
+        Cookies.set(USER_SESSION, session, { expires: instance.expires });
         instance.store.dispatch(getSessionSuccess());
         resolve();
       } else {
-        localForage.setItem(USER_SESSION, session)
+        localForage.setItem(USER_SESSION, session, { expires: 360 })
         .then(() => {
           instance.store.dispatch(getSessionSuccess());
           resolve();
         })
         .catch(() => {
-          Cookies.set(USER_SESSION, session);
+          Cookies.set(USER_SESSION, session, { expires: instance.expires });
           instance.store.dispatch(getSessionSuccess());
           resolve();
         });
@@ -161,7 +163,7 @@ export class sessionService {
         instance.store.dispatch(getUserSessionSuccess(user));
         resolve();
       } else if (instance.driver === 'COOKIES') {
-        Cookies.set(USER_DATA, user);
+        Cookies.set(USER_DATA, user, { expires: instance.expires });
         instance.store.dispatch(getUserSessionSuccess(user));
         resolve();
       } else {
@@ -172,7 +174,7 @@ export class sessionService {
         })
         .catch(() => {
           instance.store.dispatch(getUserSessionSuccess(user));
-          Cookies.set(USER_DATA, user);
+          Cookies.set(USER_DATA, user, { expires: instance.expires });
           resolve();
         });
       }
