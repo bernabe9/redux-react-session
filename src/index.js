@@ -112,7 +112,7 @@ export class sessionService {
         instance.store.dispatch(getSessionSuccess());
         resolve();
       } else {
-        localForage.setItem(USER_SESSION, session, { expires: 360 })
+        localForage.setItem(USER_SESSION, session)
         .then(() => {
           instance.store.dispatch(getSessionSuccess());
           resolve();
