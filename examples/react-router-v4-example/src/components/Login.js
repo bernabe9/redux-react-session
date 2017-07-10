@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
@@ -35,7 +36,7 @@ class Login extends Component {
 
   render() {
     const { user: { email, password } } = this.state;
-    const submitButton = withRouter(({ history }) => (
+    const SubmitButton = withRouter(({ history }) => (
       <button
         onClick={() => this.onSubmit(history)}
         type="submit">Submit
@@ -59,7 +60,7 @@ class Login extends Component {
           type="password"
           onChange={this.onChange}
         />
-        { submitButton() }
+        <SubmitButton />
       </div>
     );
   }

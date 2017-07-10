@@ -1,5 +1,6 @@
 // This component handles the App template used on every page.
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Home from './Home';
