@@ -4,20 +4,13 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router-dom';
 import * as sessionActions from '../actions/sessionActions';
+import LogoutButton from './LogoutButton';
 
 const Home = ({ actions: { logout }, user, authenticated }) => (
   <div>
     <h3>Welcome {user.email}</h3>
     <h5>{authenticated ? 'You are authenticated :)' : 'Error'}</h5>
-    {
-      withRouter(({ history }) => (
-        <button
-          onClick={() => logout(history)}
-        >
-          LOGOUT
-        </button>
-      ))
-    }
+    <LogoutButton />
   </div>
 );
 
