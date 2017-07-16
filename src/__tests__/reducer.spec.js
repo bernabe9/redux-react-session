@@ -21,6 +21,10 @@ describe('Reducer', () => {
       expect(reducer(initialState, action).authenticated).toEqual(true);
     });
 
+    test('change checked to true value', () => {
+      expect(reducer(initialState, action).checked).toEqual(true);
+    });
+
     test('not change the user object', () => {
       expect(reducer(initialState, action).user).toEqual(initialState.user);
     });
@@ -31,6 +35,10 @@ describe('Reducer', () => {
 
     test('change authenticated to false value', () => {
       expect(reducer(initialState, action).authenticated).toEqual(false);
+    });
+
+    test('change checked to true value', () => {
+      expect(reducer(initialState, action).checked).toEqual(true);
     });
 
     test('not change the user object', () => {

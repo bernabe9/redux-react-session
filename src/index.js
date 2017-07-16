@@ -8,6 +8,7 @@ import {
   getUserSessionError
 } from './actions';
 import reducer from './reducer';
+import immutableReducer from './immutableReducer';
 
 let instance;
 
@@ -213,3 +214,4 @@ export class sessionService {
 }
 
 export const sessionReducer = reducer;
+export const sessionImmutableReducer = immutableReducer;
