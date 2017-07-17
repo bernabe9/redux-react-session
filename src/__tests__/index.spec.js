@@ -28,8 +28,26 @@ describe('API functions', () => {
       test('change authenticated flag to false and the user to empty object', (done) => {
         // wait for change the redux store
         const unsubscribe = store.subscribe(() => {
-          expect(store.getState().authenticated).toEqual(false);
-          expect(store.getState().user).toEqual({});
+          const state = store.getState();
+          expect(state.authenticated).toEqual(false);
+          expect(state.user).toEqual({});
+          unsubscribe();
+          done();
+        });
+
+        sessionService.refreshFromLocalStorage();
+      });
+    });
+
+    describe('with session and without user in the storage', () => {
+      test('change authenticated flag to true', (done) => {
+        __setSession(session);
+
+        // wait for change the redux store
+        const unsubscribe = store.subscribe(() => {
+          const state = store.getState();
+          expect(state.authenticated).toEqual(true);
+          expect(state.user).toEqual({});
           unsubscribe();
           done();
         });
@@ -56,7 +74,7 @@ describe('API functions', () => {
           }
         });
 
-        sessionService.refreshFromLocalStorage(session);
+        sessionService.refreshFromLocalStorage();
       });
     });
   });
