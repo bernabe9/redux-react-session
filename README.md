@@ -1,7 +1,7 @@
 # Redux React Session
 
 [![NPM version](https://img.shields.io/npm/v/redux-react-session.svg?style=flat)](https://npmjs.org/package/redux-react-session)
-[![Build status: Linux](https://img.shields.io/travis/bernabe9/redux-react-session.svg?style=flat)](https://travis-ci.org/bernabe9/redux-react-session)
+[![Build status: Linux](https://travis-ci.org/bernabe9/redux-react-session.svg?branch=master)](https://travis-ci.org/bernabe9/redux-react-session)
 [![Dependency Status](https://img.shields.io/david/bernabe9/redux-react-session.svg)](https://david-dm.org/bernabe9/redux-react-session)
 [![Coverage Status](https://img.shields.io/coveralls/bernabe9/redux-react-session.svg)](https://coveralls.io/github/bernabe9/redux-react-session?branch=master)
 
