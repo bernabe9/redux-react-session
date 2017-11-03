@@ -37,7 +37,7 @@ export class sessionService {
 
   static initSessionService(store, options) {
     instance = new sessionService(store, options);
-    sessionService.refreshFromLocalStorage();
+    return sessionService.refreshFromLocalStorage();
   }
 
   static initServerSession(store, req, options) {
@@ -72,7 +72,7 @@ export class sessionService {
     return sessionService.loadSession()
     .then(() => {
       instance.store.dispatch(getSessionSuccess());
-      sessionService.loadUser().then((user) => {
+      return sessionService.loadUser().then((user) => {
         instance.store.dispatch(getUserSessionSuccess(user));
       })
       .catch(() => {
