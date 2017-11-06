@@ -14,13 +14,9 @@ describe('API functions', () => {
   const session = { token: '12341234' };
   beforeAll((done) => {
     store = createStore(sessionReducer, initialState);
-
-    // wait for refresh redux store from localStorage
-    const unsubscribe = store.subscribe(() => {
-      unsubscribe();
+    sessionService.initSessionService(store).then( () => {
       done();
-    });
-    sessionService.initSessionService(store);
+    })
   });
 
   describe('refreshFromLocalStorage', () => {
