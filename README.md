@@ -5,7 +5,7 @@
 [![Dependency Status](https://img.shields.io/david/bernabe9/redux-react-session.svg)](https://david-dm.org/bernabe9/redux-react-session)
 [![Coverage Status](https://img.shields.io/coveralls/bernabe9/redux-react-session.svg)](https://coveralls.io/github/bernabe9/redux-react-session?branch=master)
 
-Keep your session sync with localStorage and Redux :key:
+Keep your session sync with your local storage and Redux :key:
 
 Redux React Session provides an API that allows to manage sessions through the app, with authorization function for [react-router](https://github.com/ReactTraining/react-router) and a persisted session.
 
@@ -43,7 +43,7 @@ sessionService.initSessionService(store);
 ## Examples
 The examples simulates a simple login/logout that sends requests to a server.
 
-### Run the example
+### Run the example for react router v3
 1. **get into the folder**:`cd examples/example`
 2. **install dependencies**: `npm install`
 3. **run the example**: `npm start`
@@ -56,8 +56,12 @@ The examples simulates a simple login/logout that sends requests to a server.
 
 ## API
 
-### initSessionService(store, options)
+### initSessionService(store, options) : Promise
 Initialize an instance of the session service.
+
+The promise will be resolved if the session is valid, and will be rejected if there is no data in the storage.
+
+Once the promise is resolved or rejected the flag `checked` in the redux store will change from `false` to `true`. This allows to check into any component if the session was already checked and it's valid.
 
 Options:
 - refreshOnCheckAuth(**default**: false): Refresh Redux store in the `checkAuth` function
@@ -67,11 +71,15 @@ Options:
 Example:
 ```javascript
 const options = { refreshOnCheckAuth: true, redirectPath: '/home', driver: 'COOKIES' };
-sessionService.initSessionService(store, options);
+sessionService.initSessionService(store, options)
+  .then(() => console.log('Redux React Session is ready and a session was refreshed from your storage'))
+  .catch(() => console.log('Redux React Session is ready and there is no session in your storage'));
 ```
 
 ### refreshFromLocalStorage
-Force to refresh the Redux Store from the localStorage.
+Force to refresh the Redux Store from the local storage.
+
+The promise will be resolved if the session is valid, and will be rejected if there is no data in the storage.
 
 Note: this function is called once the session service is initialized
 
