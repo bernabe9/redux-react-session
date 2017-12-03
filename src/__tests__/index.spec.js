@@ -3,10 +3,12 @@
 import { sessionService, sessionReducer } from '../index';
 import { initialState } from '../reducer';
 import { createStore } from 'redux';
-import { __setError, __setSession, __setUser } from 'localforage';
 import * as Cookies from "js-cookie";
 
 jest.mock('localforage');
+
+const localforage = require('localforage');
+const { __setError, __setSession, __setUser } = localforage;
 
 describe('API functions', () => {
   let store;
@@ -14,9 +16,10 @@ describe('API functions', () => {
   const session = { token: '12341234' };
   beforeAll((done) => {
     store = createStore(sessionReducer, initialState);
-    sessionService.initSessionService(store).then( () => {
+    const options = { driver: 'LOCALFORAGE' };
+    sessionService.initSessionService(store, options).then( () => {
       done();
-    })
+    });
   });
 
   describe('refreshFromLocalStorage', () => {
