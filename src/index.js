@@ -1,5 +1,4 @@
 import { USER_SESSION, USER_DATA } from './constants';
-import * as localForage from 'localforage';
 import * as Cookies from "js-cookie";
 import {
   getSessionSuccess,
@@ -32,7 +31,16 @@ export class sessionService {
     instance.expires = expires;
     instance.driver = driver;
     instance.server = server;
-    driver && driver !== 'COOKIES' && localForage.setDriver(localForage[driver]);
+
+    // configure the storage
+    const storageOptions = {
+      name: 'redux-react-session'
+    };
+    const localforage = require('localforage');
+    if (driver && driver !== 'COOKIES') {
+      storageOptions.driver = localforage[driver];
+    }
+    instance.storage = localforage.createInstance(storageOptions);
   }
 
   static initSessionService(store, options) {
@@ -116,7 +124,7 @@ export class sessionService {
         instance.store.dispatch(getSessionSuccess());
         resolve();
       } else {
-        localForage.setItem(USER_SESSION, session)
+        instance.storage.setItem(USER_SESSION, session)
         .then(() => {
           instance.store.dispatch(getSessionSuccess());
           resolve();
@@ -138,7 +146,7 @@ export class sessionService {
         const cookies = Cookies.getJSON(USER_SESSION);
         cookies ? resolve(cookies) : reject('Session not found');
       } else {
-        localForage.getItem(USER_SESSION)
+        instance.storage.getItem(USER_SESSION)
         .then((currentSession) => {
           if (currentSession) {
             resolve(currentSession);
@@ -153,7 +161,7 @@ export class sessionService {
   }
 
   static deleteSession() {
-    return localForage.removeItem(USER_SESSION).then(() => {
+    return instance.storage.removeItem(USER_SESSION).then(() => {
       instance.store.dispatch(getSessionError());
       Cookies.remove(USER_SESSION);
       delete instance[USER_SESSION];
@@ -171,7 +179,7 @@ export class sessionService {
         instance.store.dispatch(getUserSessionSuccess(user));
         resolve();
       } else {
-        localForage.setItem(USER_DATA, user)
+        instance.storage.setItem(USER_DATA, user)
         .then((user) => {
           instance.store.dispatch(getUserSessionSuccess(user));
           resolve();
@@ -193,7 +201,7 @@ export class sessionService {
         const cookies = Cookies.getJSON(USER_DATA);
         cookies ? resolve(cookies) : reject('User not found');
       } else {
-        localForage.getItem(USER_DATA)
+        instance.storage.getItem(USER_DATA)
         .then((currentUser) => {
           if (currentUser) {
             resolve(currentUser);
@@ -208,7 +216,7 @@ export class sessionService {
   }
 
   static deleteUser() {
-    return localForage.removeItem(USER_DATA).then(() => {
+    return instance.storage.removeItem(USER_DATA).then(() => {
       instance.store.dispatch(getUserSessionError());
       Cookies.remove(USER_DATA);
       delete instance[USER_DATA];
