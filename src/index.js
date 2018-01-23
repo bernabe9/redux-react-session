@@ -62,18 +62,24 @@ export class sessionService {
 
       return list;
     };
-    sessionService.saveFromClient(parseCookies(req));
+    return sessionService.saveFromClient(parseCookies(req));
   }
 
   static saveFromClient(cookies) {
-    if (cookies[USER_SESSION]) {
-      sessionService.saveSession(cookies[USER_SESSION])
-      .then(() => {
-        if (cookies[USER_DATA]) {
-          sessionService.saveUser(cookies[USER_DATA]);
-        }
-      });
-    }
+    return new Promise((resolve, reject) => {
+      if (cookies[USER_SESSION]) {
+        sessionService.saveSession(cookies[USER_SESSION])
+        .then(() => {
+          if (cookies[USER_DATA]) {
+            sessionService.saveUser(cookies[USER_DATA])
+            .then(() => resolve());
+          }
+        });
+      } else {
+        instance.store.dispatch(getSessionError());
+        reject('Session not found');
+      }
+    });
   }
 
   static refreshFromLocalStorage() {
