@@ -137,6 +137,7 @@ Usage of `redux-react-session` with an immutable store is really simple.
 Instead of the `sessionReducer` import the `sessionImmutableReducer`, as the following example:
 
 - Add the session reducer:
+
 ```javascript
 import { combineReducers } from 'redux';
 import { sessionImmutableReducer as session } from 'redux-react-session';
