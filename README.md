@@ -21,7 +21,6 @@ npm:
 ## Usage
 
 - Add the session reducer:
-
 ```javascript
 import { combineReducers } from 'redux';
 import { sessionReducer } from 'redux-react-session';
@@ -32,9 +31,7 @@ const reducers = {
 };
 const reducer = combineReducers(reducers);
 ```
-
 - Initiate the session service:
-
 ```javascript
 import { createStore } from 'redux';
 import { sessionService } from 'redux-react-session';
