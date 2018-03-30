@@ -137,7 +137,6 @@ Usage of `redux-react-session` with an immutable store is really simple.
 Instead of the `sessionReducer` import the `sessionImmutableReducer`, as the following example:
 
 - Add the session reducer:
-
 ```javascript
 import { combineReducers } from 'redux';
 import { sessionImmutableReducer as session } from 'redux-react-session';
@@ -148,7 +147,6 @@ const reducers = {
 };
 const reducer = combineReducers(reducers);
 ```
-
 ## Server Rendering
 `redux-react-session` also provides methods to keep the session with server rendering using cookies. So the session will work on the server side as well as the client side.
 
@@ -176,7 +174,6 @@ app.use((req, res) => {
 }
 // ...
 ```
-
 ### initSessionService(store, { driver: 'COOKIES' })
 Initialize an instance of the client session service, IMPORTANT to set the option 'COOKIES'(this is the way that the client send the session data to the server).
 
