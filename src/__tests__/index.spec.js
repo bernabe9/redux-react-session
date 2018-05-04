@@ -14,12 +14,10 @@ describe('API functions', () => {
   let store;
   const user = { email: 'test@test.com', firstName: 'test', lastName: 'test' };
   const session = { token: '12341234' };
-  beforeAll((done) => {
+  beforeEach((done) => {
     store = createStore(sessionReducer, initialState);
     const options = { driver: 'LOCALFORAGE' };
-    sessionService.initSessionService(store, options).then( () => {
-      done();
-    });
+    sessionService.initSessionService(store, options).then(done);
   });
 
   describe('refreshFromLocalStorage', () => {
@@ -74,6 +72,28 @@ describe('API functions', () => {
         });
 
         sessionService.refreshFromLocalStorage();
+      });
+
+      describe('with invalid session', () => {
+        beforeEach((done) => {
+          const options = { driver: 'LOCALFORAGE', validateSession: () => false };
+          sessionService.initSessionService(store, options).then(done);
+        });
+
+        test('change to invalid session', (done) => {
+          __setUser(user);
+          __setSession(session);
+
+          // wait for change the redux store
+          const unsubscribe = store.subscribe(() => {
+            const state = store.getState();
+            expect(state.invalid).toEqual(true);
+            unsubscribe();
+            done();
+          });
+
+          sessionService.refreshFromLocalStorage();
+        });
       });
     });
   });

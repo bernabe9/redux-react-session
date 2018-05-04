@@ -4,7 +4,8 @@ import {
   getSessionSuccess,
   getSessionError,
   getUserSessionSuccess,
-  getUserSessionError
+  getUserSessionError,
+  invalidSession
 } from './actions';
 import reducer from './reducer';
 import immutableReducer from './immutableReducer';
@@ -20,6 +21,7 @@ export class sessionService {
 
   static setOptions(store, {
     driver,
+    validateSession,
     refreshOnCheckAuth = false,
     expires = 360,
     redirectPath = 'login',
@@ -31,6 +33,7 @@ export class sessionService {
     instance.expires = expires;
     instance.driver = driver;
     instance.server = server;
+    instance.validateSession = validateSession;
 
     // configure the storage
     const storageOptions = {
@@ -84,7 +87,13 @@ export class sessionService {
 
   static refreshFromLocalStorage() {
     return sessionService.loadSession()
-    .then(() => {
+    .then((session) => {
+      if (instance.validateSession && !instance.validateSession(session)) {
+        instance.store.dispatch(invalidSession());
+        sessionService.deleteSession();
+        sessionService.deleteUser();
+        return;
+      }
       instance.store.dispatch(getSessionSuccess());
       return sessionService.loadUser().then((user) => {
         instance.store.dispatch(getUserSessionSuccess(user));

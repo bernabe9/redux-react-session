@@ -66,11 +66,17 @@ Once the promise is resolved or rejected the flag `checked` in the redux store w
 Options:
 - refreshOnCheckAuth(**default**: false): Refresh Redux store in the `checkAuth` function
 - redirectPath(**default**: `"login"`): Path used when a session is rejected or doesn't exist
-- driver: Force to use a particular driver, should be: 'INDEXEDDB', 'WEBSQL', 'LOCALSTORAGE' or 'COOKIES'
+- driver: Force to use a particular driver, could be: 'INDEXEDDB', 'WEBSQL', 'LOCALSTORAGE' or 'COOKIES'
+- validateSession: Function to validate the saved session, it should return a BOOLEAN. If it returns `false` the session will be destroyed
 
 Example:
 ```javascript
-const options = { refreshOnCheckAuth: true, redirectPath: '/home', driver: 'COOKIES' };
+const validateSession = (session) => {
+  // check if your session is still valid
+  return true;
+}
+const options = { refreshOnCheckAuth: true, redirectPath: '/home', driver: 'COOKIES', validateSession };
+
 sessionService.initSessionService(store, options)
   .then(() => console.log('Redux React Session is ready and a session was refreshed from your storage'))
   .catch(() => console.log('Redux React Session is ready and there is no session in your storage'));
