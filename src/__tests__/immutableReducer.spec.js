@@ -4,7 +4,8 @@ import {
   GET_SESSION_SUCCESS,
   GET_SESSION_ERROR,
   GET_USER_SESSION_SUCCESS,
-  GET_USER_SESSION_ERROR
+  GET_USER_SESSION_ERROR,
+  INVALID_SESSION
 } from '../actionTypes';
 
 describe('Reducer', () => {
@@ -81,6 +82,30 @@ describe('Reducer', () => {
     test('not change the authenticated flag', () => {
       const authenticated = reducer(modificatedState, action).get('authenticated');
       expect(authenticated).toEqual(modificatedState.get('authenticated'));
+    });
+  });
+
+  describe('INVALID_SESSION', () => {
+    const action = { type: INVALID_SESSION };
+
+    test('change authenticated to false value', () => {
+      const authenticated = reducer(initialState, action).get('authenticated');
+      expect(authenticated).toEqual(false);
+    });
+
+    test('change checked to true value', () => {
+      const checked = reducer(initialState, action).get('checked');
+      expect(checked).toEqual(true);
+    });
+
+    test('change invalid session to true', () => {
+      const invalid = reducer(initialState, action).get('invalid');
+      expect(invalid).toEqual(true);
+    });
+
+    test('not change the user object', () => {
+      const user = reducer(initialState, action).get('user').toJS();
+      expect(user).toEqual(initialState.get('user').toJS());
     });
   });
 });

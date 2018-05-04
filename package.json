@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npm run clean && babel src --out-dir dist",
     "test": "jest /src/__tests__",
+    "test:watch": "jest /src/__tests__ --watch",
     "test:cover": "npm run test -- --coverage",
     "test:cover:CI": "npm run test:cover && cat ./coverage/lcov.info | node_modules/coveralls/bin/coveralls.js",
     "lint": "eslint src",
@@ -57,6 +58,6 @@
   },
   "peerDependencies": {
     "react": "^0.14.0 || ^15.0.0 || ^16.0.0",
-    "redux": "^3.0.0"
+    "redux": "^3.0.0 || ^4.0.0"
   }
 }

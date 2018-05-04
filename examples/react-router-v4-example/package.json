@@ -18,7 +18,7 @@
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.1.1",
     "redux": "^3.7.1",
-    "redux-react-session": "^1.3.0",
+    "redux-react-session": "file:../../",
     "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
