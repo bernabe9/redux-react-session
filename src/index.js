@@ -108,7 +108,10 @@ export class sessionService {
         let value = instance.validateSession(session);
 
         if (isPromise(value)) {
-          return value.then(() => {
+          return value.then(valid => {
+            if (!valid) {
+              throw new Error("Session is invalid");
+            }
             return this.attemptLoadUser();
           }).catch(err => {
             this.invalidateSession();
