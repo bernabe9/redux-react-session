@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "immutable": "^3.8.1",
+    "is-promise": "^2.1.0",
     "js-cookie": "2.1.4",
     "localforage": "1.5.5"
   },

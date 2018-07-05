@@ -1,5 +1,6 @@
 import { USER_SESSION, USER_DATA } from './constants';
 import * as Cookies from "js-cookie";
+import isPromise from 'is-promise';
 import {
   getSessionSuccess,
   getSessionError,
@@ -85,22 +86,42 @@ export class sessionService {
     });
   }
 
+  static invalidateSession() {
+    instance.store.dispatch(invalidSession());
+    sessionService.deleteSession();
+    sessionService.deleteUser();
+  }
+
+  static attemptLoadUser() {
+    instance.store.dispatch(getSessionSuccess());
+    return sessionService.loadUser().then((user) => {
+      instance.store.dispatch(getUserSessionSuccess(user));
+    }).catch(() => {
+      instance.store.dispatch(getUserSessionError());
+    });
+  }
+
   static refreshFromLocalStorage() {
     return sessionService.loadSession()
     .then((session) => {
-      if (instance.validateSession && !instance.validateSession(session)) {
-        instance.store.dispatch(invalidSession());
-        sessionService.deleteSession();
-        sessionService.deleteUser();
-        return;
+      if (instance.validateSession) {
+        let value = instance.validateSession(session);
+
+        if (isPromise(value)) {
+          return value.then(valid => {
+            if (!valid) {
+              throw new Error("Session is invalid");
+            }
+            return this.attemptLoadUser();
+          }).catch(() => {
+            this.invalidateSession();
+          });
+        } else if (!value) {
+          this.invalidateSession();
+          return;
+        }
       }
-      instance.store.dispatch(getSessionSuccess());
-      return sessionService.loadUser().then((user) => {
-        instance.store.dispatch(getUserSessionSuccess(user));
-      })
-      .catch(() => {
-        instance.store.dispatch(getUserSessionError());
-      });
+      return this.attemptLoadUser();
     })
     .catch(() => {
       instance.store.dispatch(getSessionError());

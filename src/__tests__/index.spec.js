@@ -404,4 +404,47 @@ describe('API functions', () => {
       sessionService.deleteUser();
     });
   });
+
+  describe('validateSession', () => {
+    afterEach(() => {
+      sessionService.setOptions(store);
+    });
+
+    const testGenerator = (done, functor, expectedInvalidValue) => {
+      __setUser(user);
+      __setSession(session);
+
+      const options = { driver: 'LOCALFORAGE', validateSession: functor };
+      sessionService.initSessionService(store, options).then(() => {
+
+        // wait for change the redux store
+        const unsubscribe = store.subscribe(() => {
+          const state = store.getState();
+          expect(state.invalid).toEqual(expectedInvalidValue);
+          unsubscribe();
+          done();
+        });
+
+        sessionService.refreshFromLocalStorage();
+      });
+
+    };
+
+    const testImmediateGenerator = (done, value) => testGenerator(done, () => value, !value);
+    const testPromiseGenerator = (done, functor, expectedValue) => testGenerator(done, () => new Promise((accept, reject) => {
+      try {
+        accept(functor());
+      } catch (err) {
+        reject(err);
+      }
+    }), expectedValue);
+
+    test('Immediate function return true', (done) => testImmediateGenerator(done, true));
+    test('Immediate function return false', (done) => testImmediateGenerator(done, false));
+
+    test('Promise function return true', (done) => testPromiseGenerator(done, () => true, false));
+    test('Promise function return false', (done) => testPromiseGenerator(done, () => false, true));
+    test('Promise function throw error', (done) => testPromiseGenerator(done, () => { throw new Error() }, true));
+  });
+
 });
