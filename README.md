@@ -81,6 +81,18 @@ sessionService.initSessionService(store, options)
   .catch(() => console.log('Redux React Session is ready and there is no session in your storage'));
 ```
 
+```javascript
+const validateSession = (session) => {
+  // check if your session is still valid with a server check, through axios for instance
+  return api.invokeRemoteSessionValidationThroughAxios(session).then(response => response.isSessionValid);
+}
+const options = { refreshOnCheckAuth: true, redirectPath: '/home', driver: 'COOKIES', validateSession };
+
+sessionService.initSessionService(store, options)
+  .then(() => console.log('Redux React Session is ready and a session was refreshed from your storage'))
+  .catch(() => console.log('Redux React Session is ready and there is no session in your storage'));
+```
+
 ### refreshFromLocalStorage
 Force to refresh the Redux Store from the local storage.
 
