@@ -104,7 +104,7 @@ export class sessionService {
   static refreshFromLocalStorage() {
     return sessionService.loadSession()
     .then((session) => {
-      if (instance.validateSession){
+      if (instance.validateSession) {
         let value = instance.validateSession(session);
 
         if (isPromise(value)) {
@@ -113,7 +113,7 @@ export class sessionService {
               throw new Error("Session is invalid");
             }
             return this.attemptLoadUser();
-          }).catch(err => {
+          }).catch(() => {
             this.invalidateSession();
           });
         } else if (!value) {
