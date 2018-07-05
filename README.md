@@ -67,8 +67,7 @@ Options:
 - refreshOnCheckAuth(**default**: false): Refresh Redux store in the `checkAuth` function
 - redirectPath(**default**: `"login"`): Path used when a session is rejected or doesn't exist
 - driver: Force to use a particular driver, could be: 'INDEXEDDB', 'WEBSQL', 'LOCALSTORAGE' or 'COOKIES'
-- validateSession: Function to validate the saved session, it should return a BOOLEAN. If it returns `false` the session will be destroyed
-
+- validateSession: Function to validate the saved session. It can either be a function to return an immediate boolean value or a function that returns a promise. In the case it returns an immadiate value and `false` is returned the session will be destroyed. In the case of a promise, if either `false` is returned or an exception is thrown, the session will be destroyed.
 Example:
 ```javascript
 const validateSession = (session) => {
