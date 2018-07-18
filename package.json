@@ -10,7 +10,8 @@
     "test:cover": "npm run test -- --coverage",
     "test:cover:CI": "npm run test:cover && cat ./coverage/lcov.info | node_modules/coveralls/bin/coveralls.js",
     "lint": "eslint src",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
