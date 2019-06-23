@@ -151,12 +151,12 @@ Deletes the current user from the storage/cookies
 
 ## Immutable JS
 Usage of `redux-react-session` with an immutable store is really simple.
-Instead of the `sessionReducer` import the `sessionImmutableReducer`, as the following example:
+Instead of the `sessionReducer` import the `sessionReducer` from `redux-react-session/immutable`, as the following example:
 
 - Add the session reducer:
 ```javascript
 import { combineReducers } from 'redux';
-import { sessionImmutableReducer as session } from 'redux-react-session';
+import { sessionReducer as session } from 'redux-react-session/immutable';
 
 const reducers = {
   // ... your other reducers here ...
