@@ -18,9 +18,9 @@ class LocalForage {
 
   setItem(item, data) {
     return new Promise((resolve, reject) => {
-      if (item === this.keys.sessionKey) {
+      if (item === this.sessionKey) {
         session = data;
-      } else if (item === this.keys.sessionData) {
+      } else if (item === this.sessionData) {
         user = data;
       }
       throwError ? reject() : resolve(data);
@@ -78,4 +78,4 @@ localforage.__setError = __setError;
 localforage.__setUser = __setUser;
 localforage.__setSession = __setSession;
 
-module.exports = ç;
+module.exports = localforage;
