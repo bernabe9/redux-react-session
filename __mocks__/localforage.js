@@ -1,11 +1,9 @@
-'use strict';
+"use strict";
 
-import { USER_SESSION, USER_DATA } from '../src/constants';
+const localforage = jest.genMockFromModule("localforage");
 
-const localforage = jest.genMockFromModule('localforage');
-
-function createInstance() {
-  return new LocalForage();
+function createInstance(options) {
+  return new LocalForage(options);
 }
 
 let throwError = false;
@@ -13,13 +11,16 @@ let user = undefined;
 let session = undefined;
 
 class LocalForage {
-  constructor() {}
+  constructor(options) {
+    this.sessionKey = options.sessionKey;
+    this.sessionData = options.sessionData;
+  }
 
   setItem(item, data) {
     return new Promise((resolve, reject) => {
-      if (item === USER_SESSION) {
+      if (item === this.sessionKey) {
         session = data;
-      } else if (item === USER_DATA) {
+      } else if (item === this.sessionData) {
         user = data;
       }
       throwError ? reject() : resolve(data);
@@ -27,20 +28,20 @@ class LocalForage {
   }
 
   getItem(item) {
-    return new Promise((resolve) => {
-      if (item === USER_SESSION) {
+    return new Promise(resolve => {
+      if (item === this.sessionKey) {
         return resolve(session);
-      } else if (item === USER_DATA) {
+      } else if (item === this.sessionData) {
         return resolve(user);
       }
     });
   }
 
   removeItem(item) {
-    return new Promise((resolve) => {
-      if (item === USER_SESSION) {
+    return new Promise(resolve => {
+      if (item === this.sessionKey) {
         session = undefined;
-      } else if (item === USER_DATA) {
+      } else if (item === this.sessionData) {
         user = undefined;
       }
       resolve();

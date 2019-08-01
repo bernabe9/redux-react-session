@@ -1,4 +1,3 @@
-import { USER_SESSION, USER_DATA } from './constants';
 import * as Cookies from "js-cookie";
 import isPromise from 'is-promise';
 import {
@@ -25,7 +24,10 @@ export class sessionService {
     refreshOnCheckAuth = false,
     expires = 360,
     redirectPath = 'login',
-    server = false
+    server = false,
+    sessionKey,
+    sessionData,
+    
   } = {}) {
     instance.store = store;
     instance.refreshOnCheckAuth = refreshOnCheckAuth;
@@ -34,10 +36,14 @@ export class sessionService {
     instance.driver = driver;
     instance.server = server;
     instance.validateSession = validateSession;
+    instance.sessionKey = sessionKey;
+    instance.sessionData = sessionData;
 
     // configure the storage
     const storageOptions = {
-      name: 'redux-react-session'
+      name: 'redux-react-session',
+      sessionKey: sessionKey,
+      sessionData: sessionData
     };
     const localforage = require('localforage');
     if (driver && driver !== 'COOKIES') {
@@ -58,7 +64,7 @@ export class sessionService {
       const rc = req.get('cookie');
       rc && rc.split(';').forEach(cookie => {
         const parts = cookie.split('=');
-        if (parts[0].trim() === USER_SESSION || parts[0].trim() === USER_DATA) {
+        if (parts[0].trim() === instance.sessionKey || parts[0].trim() === instance.sessionData) {
           list[parts[0].trim()] = JSON.parse(decodeURIComponent(parts[1]));
         }
       });
@@ -70,11 +76,11 @@ export class sessionService {
 
   static saveFromClient(cookies) {
     return new Promise((resolve, reject) => {
-      if (cookies[USER_SESSION]) {
-        sessionService.saveSession(cookies[USER_SESSION])
+      if (cookies[instance.sessionKey]) {
+        sessionService.saveSession(cookies[instance.sessionKey])
         .then(() => {
-          if (cookies[USER_DATA]) {
-            sessionService.saveUser(cookies[USER_DATA])
+          if (cookies[instance.sessionData]) {
+            sessionService.saveUser(cookies[instance.sessionData])
             .then(() => resolve());
           }
         });
@@ -151,21 +157,21 @@ export class sessionService {
   static saveSession(session) {
     return new Promise((resolve) => {
       if (instance.server) {
-        instance[USER_SESSION] = session;
+        instance[instance.sessionKey] = session;
         instance.store.dispatch(getSessionSuccess());
         resolve();
       } else if (instance.driver === 'COOKIES') {
-        Cookies.set(USER_SESSION, session, { expires: instance.expires });
+        Cookies.set(instance.sessionKey, session, { expires: instance.expires });
         instance.store.dispatch(getSessionSuccess());
         resolve();
       } else {
-        instance.storage.setItem(USER_SESSION, session)
+        instance.storage.setItem(instance.sessionKey, session)
         .then(() => {
           instance.store.dispatch(getSessionSuccess());
           resolve();
         })
         .catch(() => {
-          Cookies.set(USER_SESSION, session, { expires: instance.expires });
+          Cookies.set(instance.sessionKey, session, { expires: instance.expires });
           instance.store.dispatch(getSessionSuccess());
           resolve();
         });
@@ -176,17 +182,17 @@ export class sessionService {
   static loadSession() {
     return new Promise((resolve, reject) => {
       if (instance.server) {
-        instance[USER_SESSION] ? resolve(instance[USER_SESSION]) : reject();
+        instance[instance.sessionKey] ? resolve(instance[instance.sessionKey]) : reject();
       } else if (instance.driver === 'COOKIES') {
-        const cookies = Cookies.getJSON(USER_SESSION);
+        const cookies = Cookies.getJSON(instance.sessionKey);
         cookies ? resolve(cookies) : reject('Session not found');
       } else {
-        instance.storage.getItem(USER_SESSION)
+        instance.storage.getItem(instance.sessionKey)
         .then((currentSession) => {
           if (currentSession) {
             resolve(currentSession);
           } else {
-            const cookies = Cookies.getJSON(USER_SESSION);
+            const cookies = Cookies.getJSON(instance.sessionKey);
             cookies ? resolve(cookies) : reject('Session not found');
           }
         })
@@ -196,32 +202,32 @@ export class sessionService {
   }
 
   static deleteSession() {
-    return instance.storage.removeItem(USER_SESSION).then(() => {
+    return instance.storage.removeItem(instance.sessionKey).then(() => {
       instance.store.dispatch(getSessionError());
-      Cookies.remove(USER_SESSION);
-      delete instance[USER_SESSION];
+      Cookies.remove(instance.sessionKey);
+      delete instance[instance.sessionKey];
     });
   }
 
   static saveUser(user) {
     return new Promise((resolve) => {
       if (instance.server) {
-        instance[USER_DATA] = user;
+        instance[instance.sessionData] = user;
         instance.store.dispatch(getUserSessionSuccess(user));
         resolve();
       } else if (instance.driver === 'COOKIES') {
-        Cookies.set(USER_DATA, user, { expires: instance.expires });
+        Cookies.set(instance.sessionData, user, { expires: instance.expires });
         instance.store.dispatch(getUserSessionSuccess(user));
         resolve();
       } else {
-        instance.storage.setItem(USER_DATA, user)
+        instance.storage.setItem(instance.sessionData, user)
         .then((user) => {
           instance.store.dispatch(getUserSessionSuccess(user));
           resolve();
         })
         .catch(() => {
           instance.store.dispatch(getUserSessionSuccess(user));
-          Cookies.set(USER_DATA, user, { expires: instance.expires });
+          Cookies.set(instance.sessionData, user, { expires: instance.expires });
           resolve();
         });
       }
@@ -231,17 +237,17 @@ export class sessionService {
   static loadUser() {
     return new Promise((resolve, reject) => {
       if (instance.server) {
-        instance[USER_DATA] ? resolve(instance[USER_DATA]) : reject();
+        instance[instance.sessionData] ? resolve(instance[instance.sessionData]) : reject();
       } else if (instance.driver === 'COOKIES') {
-        const cookies = Cookies.getJSON(USER_DATA);
+        const cookies = Cookies.getJSON(instance.sessionData);
         cookies ? resolve(cookies) : reject('User not found');
       } else {
-        instance.storage.getItem(USER_DATA)
+        instance.storage.getItem(instance.sessionData)
         .then((currentUser) => {
           if (currentUser) {
             resolve(currentUser);
           } else {
-            const cookies = Cookies.getJSON(USER_DATA);
+            const cookies = Cookies.getJSON(instance.sessionData);
             cookies ? resolve(cookies) : reject('User not found');
           }
         })
@@ -251,10 +257,10 @@ export class sessionService {
   }
 
   static deleteUser() {
-    return instance.storage.removeItem(USER_DATA).then(() => {
+    return instance.storage.removeItem(instance.sessionData).then(() => {
       instance.store.dispatch(getUserSessionError());
-      Cookies.remove(USER_DATA);
-      delete instance[USER_DATA];
+      Cookies.remove(instance.sessionData);
+      delete instance[instance.sessionData];
     });
   }
 }
