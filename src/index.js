@@ -77,6 +77,8 @@ export class sessionService {
             sessionService.saveUser(cookies[USER_DATA])
             .then(() => resolve());
           }
+
+          return resolve();
         });
       } else {
         instance.store.dispatch(getSessionError());
