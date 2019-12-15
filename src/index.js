@@ -150,14 +150,14 @@ export class sessionService {
     });
   }
 
-  static saveSession(session) {
+  static saveSession(session, expires=null) {
     return new Promise((resolve) => {
       if (instance.server) {
         instance[USER_SESSION] = session;
         instance.store.dispatch(getSessionSuccess());
         resolve();
       } else if (instance.driver === 'COOKIES') {
-        Cookies.set(USER_SESSION, session, { expires: instance.expires });
+        Cookies.set(USER_SESSION, session, { expires: expires == null ? instance.expires : expires });
         instance.store.dispatch(getSessionSuccess());
         resolve();
       } else {
@@ -167,7 +167,7 @@ export class sessionService {
           resolve();
         })
         .catch(() => {
-          Cookies.set(USER_SESSION, session, { expires: instance.expires });
+          Cookies.set(USER_SESSION, session, { expires: expires == null ? instance.expires : expires });
           instance.store.dispatch(getSessionSuccess());
           resolve();
         });
@@ -205,14 +205,14 @@ export class sessionService {
     });
   }
 
-  static saveUser(user) {
+  static saveUser(user, expires=null) {
     return new Promise((resolve) => {
       if (instance.server) {
         instance[USER_DATA] = user;
         instance.store.dispatch(getUserSessionSuccess(user));
         resolve();
       } else if (instance.driver === 'COOKIES') {
-        Cookies.set(USER_DATA, user, { expires: instance.expires });
+        Cookies.set(USER_DATA, user, { expires: expires == null ? instance.expires : expires });
         instance.store.dispatch(getUserSessionSuccess(user));
         resolve();
       } else {
@@ -223,7 +223,7 @@ export class sessionService {
         })
         .catch(() => {
           instance.store.dispatch(getUserSessionSuccess(user));
-          Cookies.set(USER_DATA, user, { expires: instance.expires });
+          Cookies.set(USER_DATA, user, { expires: expires == null ? instance.expires : expires });
           resolve();
         });
       }
