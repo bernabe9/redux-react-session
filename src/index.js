@@ -206,15 +206,19 @@ export class sessionService {
   }
 
   static saveUser(user) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       if (instance.server) {
         instance[USER_DATA] = user;
         instance.store.dispatch(getUserSessionSuccess(user));
         resolve();
       } else if (instance.driver === 'COOKIES') {
         Cookies.set(USER_DATA, user, { expires: instance.expires });
-        instance.store.dispatch(getUserSessionSuccess(user));
-        resolve();
+        if (Cookies.set(USER_DATA) !== undefined) {
+          instance.store.dispatch(getUserSessionSuccess(user));
+          resolve();
+        } else {
+          reject('User data could not be processed');
+        }
       } else {
         instance.storage.setItem(USER_DATA, user)
         .then((user) => {
